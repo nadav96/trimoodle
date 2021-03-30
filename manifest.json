@@ -3,8 +3,31 @@
 	"description": "Build an Extension!",
 	"version": "1.0",
 	"manifest_version": 2,
-	"permissions": [ "webNavigation", "https://moodle2.cs.huji.ac.il/*", "tabs"],
+	"browser_action": {
+		"default_popup": "popup.html",
+		"default_title": "Trim moodle"
+	 },
+	"permissions": [
+		"webNavigation",
+		"https://moodle2.cs.huji.ac.il/*",
+		"tabs",
+		"storage"
+	],
 	"background": {
-		"scripts": ["jquery-3.6.0.min.js", "background.js"]
-	}
-  }
+		"scripts": [
+			"3party/jquery-3.6.0.min.js",
+			"background.js"
+		]
+	},
+	"content_scripts": [
+		{
+			"js": [
+				"3party/jquery-3.6.0.min.js",
+				"content.js"
+			],
+			"matches": [
+				"https://moodle2.cs.huji.ac.il/*"
+			]
+		}
+	]
+}
