@@ -1,6 +1,6 @@
 .container {
     background: #FAFAFA;
-    width: 536px;
+    width: 636px;
     height: 66px;
     /*float: right;*/
     position: relative;
@@ -14,19 +14,26 @@
     transition: 0.15s all ease;
 }
 
+.footer {
+    height: 20px;
+    margin-bottom: 0;;
+    margin-left: 10px;
+}
+
 .row {
     margin: 0;;
 }
 
 #new-filter {
-    width: 80%;
+    width: 70%;
 }
 
 .row {
     width: 85%;
-    margin-left: 10px;
 }
 
-p {
-    /*margin-left: 10px;*/
+.title {
+    width:25%;
+    margin-left: 10px;
+    display: inline-block;
 }
