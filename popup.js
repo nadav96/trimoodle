@@ -1,26 +1,24 @@
-//function getRandomColor() {
-//	var letters = '0123456789ABCDEF';
-//	var color = '#';
-//	for (var i = 0; i < 6; i++) {
-//	  color += letters[Math.floor(Math.random() * 16)];
-//	}
-//	return color;
-//  }
-  
-////  let changeColor = document.getElementById("changeColor");
-////  changeColor.style.backgroundColor = getRandomColor();
-//console.log("hello", $("#changeColor"));
-//$("#changeColor").text = "hello";
-//$("#changeColor").click(function() {
-//	let changeColor = document.getElementById("changeColor");
-//	changeColor.style.backgroundColor = getRandomColor();
-//})
-//// Initialize button with user's preferred color
-
 (() => {
 	'use strict';
-	$("#changeColor").click(function() {
-		//$("#changeColor").text("!!!");
+	chrome.storage.sync.get(['filter'], function(result) {
+		console.log("hello!!!!");
+		if (isNaN(result)) {
+			$("#current-filter").text("Helo");
+		}
+		else {
+			$("#current-filter").text(result.key);
+		}
+		$("#update-filter").click(function() {
+			//$("#update-filter").text("!!!");
+			var value = $("#new-filter").val();
+			var obj = {
+				"filter": value
+			}
+			chrome.storage.sync.set(obj, function() {
+				$("#current-filter").text(value);
+				console.log('Value is set to ' + (value));
+			});
+		});
 	});
 })();
 
