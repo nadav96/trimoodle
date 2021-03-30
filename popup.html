@@ -1,9 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="button.css">
+	<link rel="stylesheet" href="popup.css">
+	<link rel="stylesheet" href="3party/mdl/material.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<script src="3party/jquery-3.6.0.min.js"></script>
+	<script src="3party/mdl/material.min.js"></script>
   </head>
   <body>
-    <button id="changeColor"></button>
+	<div class="container">
+		<div class="row">
+			<input id="new-filter" type="text" placeholder="courseId1,courseId2...">
+			<button id="submit">
+				Update
+			</button>
+		</div>
+		<br />
+
+	</div>
+	<div class="row">
+		<p id="current-filter">current:4,124,12412,</p>
+	</div>
+	<script src="popup.js"></script>
+	
+	
   </body>
 </html>

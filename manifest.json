@@ -13,12 +13,6 @@
 		"tabs",
 		"storage"
 	],
-	"background": {
-		"scripts": [
-			"3party/jquery-3.6.0.min.js",
-			"background.js"
-		]
-	},
 	"content_scripts": [
 		{
 			"js": [
