@@ -1,0 +1,10 @@
+{
+	"name": "Getting Started Example",
+	"description": "Build an Extension!",
+	"version": "1.0",
+	"manifest_version": 2,
+	"permissions": [ "webNavigation", "https://moodle2.cs.huji.ac.il/*", "tabs"],
+	"background": {
+		"scripts": ["jquery-3.6.0.min.js", "background.js"]
+	}
+  }
