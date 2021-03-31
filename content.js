@@ -1,6 +1,3 @@
-function onHideCourseClick(courseId) {
-}
-
 chrome.storage.sync.get(['filter'], function(result) {
 	console.log('Value currently is ' + result["filter"]);
 	var value = result["filter"];
@@ -17,13 +14,22 @@ chrome.storage.sync.get(['filter'], function(result) {
 		}
 		else {
 			// apply
-			$(this).parent().css("border-style", "solid")
+			var parent = $(this).parent();
+			parent.css("border-style", "solid")
 							.css("border-width", "1px")
 							.css("border-color", "#0A467E")
 							.css("margin-top","5px");
 			var button = $("<button class=\"fa fa-eye-slash\"></button>");
 			button.click(function() {
 				console.log(key);
+				chrome.storage.sync.get(['filter'], function(result) {
+					var value = result["filter"];
+					value = `${value},${key}`;	
+					
+					chrome.storage.sync.set({"filter": value}, function() {
+						parent.remove();
+					});
+				});
 			});
 			button.css("color", "red").css("float", "right")
 									.css("border", "none")
