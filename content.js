@@ -1,6 +1,10 @@
 function updateCoursesSidebar() {
 	chrome.storage.sync.get(['filter'], function(result) {
 		var value = result["filter"];
+		if (!value) {
+			value = "";
+			chrome.storage.sync.set({"filter": value});
+		}
 		courses = value.split(",");
 		map = {};
 		for (var i=0; i<courses.length; i++) {
@@ -30,7 +34,7 @@ function updateCoursesSidebar() {
 						});
 					});
 				});
-				button.css("color", "red").css("float", isRtl ? "left" : "right")
+				button.css("color", "#0A467E").css("float", isRtl ? "left" : "right")
 										.css("border", "none")
 										.css("text-decoration", "none")
 										.css("background-color", "transparent")
