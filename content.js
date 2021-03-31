@@ -1,3 +1,6 @@
+function onHideCourseClick(courseId) {
+}
+
 chrome.storage.sync.get(['filter'], function(result) {
 	console.log('Value currently is ' + result["filter"]);
 	var value = result["filter"];
@@ -11,6 +14,23 @@ chrome.storage.sync.get(['filter'], function(result) {
 		var key = $(this).attr("data-node-key");
 		if (key in map) {
 			$(this).remove();
+		}
+		else {
+			// apply
+			$(this).parent().css("border-style", "solid")
+							.css("border-width", "1px")
+							.css("border-color", "#0A467E")
+							.css("margin-top","5px");
+			var button = $("<button class=\"fa fa-eye-slash\"></button>");
+			button.click(function() {
+				console.log(key);
+			});
+			button.css("color", "red").css("float", "right")
+									.css("border", "none")
+									.css("text-decoration", "none")
+									.css("background-color", "transparent")
+									.css("font-size", "18px");
+			$(this).before(button);
 		}
 	})
 });

@@ -9,7 +9,6 @@
 		"default_title": "Trim moodle"
 	 },
 	"permissions": [
-		"webNavigation",
 		"https://moodle2.cs.huji.ac.il/*",
 		"tabs",
 		"storage"
