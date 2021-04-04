@@ -1,3 +1,23 @@
+var unhideButtonId = "unhide-button"
+var unhideButtonColor = "#D98901";
+
+function updateUnhideButtonStatus() {
+	var button = $("#" + unhideButtonId);
+	chrome.storage.sync.get(['filter'], function(result) {
+		if (result["filter"]) {
+			button.attr('disabled' , false);
+			button.css("color", unhideButtonColor);
+			console.log("disable:", false);
+		}
+		else {
+			button.attr('disabled' , true);
+			button.css("color", "")
+			console.log("disable:", true);
+		}
+	});
+}
+
+
 function updateCoursesSidebar() {
 	chrome.storage.sync.get(['filter'], function(result) {
 		var value = result["filter"];
@@ -36,16 +56,19 @@ function updateCoursesSidebar() {
 					var oldValue = result["filter"];
 					Snackbar.show({
 						pos: 'bottom-center', 
-						text: `Removed course ${key}`, 
+						text: `Hide course ${key}`, 
 						actionText: 'Undo',
-						onActionClick: function(element) {
-							chrome.storage.sync.set({"filter": oldValue});
+						onActionClick: function(element) {							
+							chrome.storage.sync.set({"filter": oldValue}, function() {
+								updateUnhideButtonStatus();
+							});
 							parent.show();
 							$(element).css('opacity', 0);
 						}});
 					var value = `${oldValue},${key}`;	
 					
 					chrome.storage.sync.set({"filter": value}, function() {
+						updateUnhideButtonStatus();
 						parent.hide();
 					});
 				});
@@ -60,21 +83,24 @@ var isRtl = $("html").attr("dir") == "rtl";
 var root = $("li.type_system > p").first();
 root.click(false);
 var button = $("<button class=\"fa fa-eye\"></button>");
+button.attr("id", unhideButtonId);
 button
-	.css("color", "#0A467E")
 	.css("float", isRtl ? "left" : "right")
 	.css("border", "none")
 	.css("text-decoration", "none")
 	.css("background-color", "transparent")
 	.css("font-size", "18px");
-button.css("color", "#D98901")
 button.click(function() {
-	chrome.storage.sync.set({"filter": ""});
+	chrome.storage.sync.set({"filter": ""}, function() {
+		updateUnhideButtonStatus();
+	});
 	$("li.type_course").each(function(i) {
 		$(this).show();
 	})
 });
 root.append(button);
+
+updateUnhideButtonStatus();
 
 // add the reset button
 var resetText = isRtl ? "הצג את כל הקורסים" : "unhide all courses";
