@@ -26,11 +26,20 @@ function updateCoursesSidebar() {
 				var button = $("<button class=\"fa fa-eye-slash\"></button>");
 				button.click(function() {
 					chrome.storage.sync.get(['filter'], function(result) {
-						var value = result["filter"];
-						value = `${value},${key}`;	
+						var oldValue = result["filter"];
+						Snackbar.show({
+							pos: 'bottom-center', 
+							text: `Removed course ${key}`, 
+							actionText: 'Undo',
+							onActionClick: function(element) {
+								chrome.storage.sync.set({"filter": oldValue});
+								parent.show();
+								$(element).css('opacity', 0);
+							}});
+						var value = `${oldValue},${key}`;	
 						
 						chrome.storage.sync.set({"filter": value}, function() {
-							parent.remove();
+							parent.hide();
 						});
 					});
 				});

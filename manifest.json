@@ -10,17 +10,20 @@
 	 },
 	"permissions": [
 		"https://moodle2.cs.huji.ac.il/*",
-		"tabs",
 		"storage"
 	],
 	"content_scripts": [
 		{
 			"js": [
 				"3party/jquery-3.6.0.min.js",
+				"3party/snackbar/snackbar.min.js",
 				"content.js"
 			],
 			"matches": [
 				"https://moodle2.cs.huji.ac.il/*"
+			],
+			"css": [
+				"3party/snackbar/snackbar.min.css"
 			]
 		}
 	],
