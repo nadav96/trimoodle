@@ -7,12 +7,10 @@ function updateUnhideButtonStatus() {
 		if (result["filter"]) {
 			button.attr('disabled' , false);
 			button.css("color", unhideButtonColor);
-			console.log("disable:", false);
 		}
 		else {
 			button.attr('disabled' , true);
 			button.css("color", "")
-			console.log("disable:", true);
 		}
 	});
 }
@@ -56,8 +54,8 @@ function updateCoursesSidebar() {
 					var oldValue = result["filter"];
 					Snackbar.show({
 						pos: 'bottom-center', 
-						text: `Hide course ${key}`, 
-						actionText: 'Undo',
+						text: isRtl ? `קורס ${key} הוסתר` : `Hide course ${key}`, 
+						actionText: isRtl ? "בטל" : 'Undo',
 						onActionClick: function(element) {							
 							chrome.storage.sync.set({"filter": oldValue}, function() {
 								updateUnhideButtonStatus();
@@ -101,18 +99,4 @@ button.click(function() {
 root.append(button);
 
 updateUnhideButtonStatus();
-
-// add the reset button
-var resetText = isRtl ? "הצג את כל הקורסים" : "unhide all courses";
-var resetButton = $(`<button>${resetText}</button>`);
-resetButton.click(function() {
-	chrome.storage.sync.set({"filter": ""});
-	location.reload();
-});
-resetButton.css(isRtl ? "margin-left" : "margin-right", "10px")
-			.css("color", "#0A467E")
-			.css("border", "none")
-			.css("text-decoration", "none")
-			.css("background-color", "transparent")
-$(".header-actions-container").append(resetButton)
 updateCoursesSidebar();
