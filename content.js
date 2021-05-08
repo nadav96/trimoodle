@@ -81,11 +81,21 @@ function addRateDialog() {
 		return;
 	}
 
-	chrome.storage.sync.get(['actionComplete', 'rateDialogDismiss'], function(result) {
+	chrome.storage.sync.get(['actionComplete', 'filter', 'rateDialogDismiss'], function(result) {
 		if (result["rateDialogDismiss"] == true) {
 			return;
 		}
-		if (result["actionComplete"] == true) {
+		if (result["actionComplete"] == true || result["filter"]) {
+			chrome.storage.sync.get(["rateShownCount"], function(result) {
+				var count = result["rateShownCount"]
+				if (Number.isInteger(count)) {
+					chrome.storage.sync.set({"rateShownCount": count+1});
+				}
+				else {
+					chrome.storage.sync.set({"rateShownCount": 1});
+				}
+			});
+
 			var container = $("<div></div>");
 			container.css("background-color", "#F0FAFF")
 					.css("margin-left", "13px")
@@ -112,11 +122,12 @@ function addRateDialog() {
 			ok.click(function() {
 				window.open("https://chrome.google.com/webstore/detail/trimoodle/najiiglmdjablddfmgegpookgecbddej/reviews")
 				container.remove();
-				chrome.storage.sync.set({"rateDialogDismiss": true});
+				chrome.storage.sync.set({"rateDialogDismiss": true, "rateResult": 1});
+
 			});
 			dismiss.click(function() {
 				container.remove();
-				chrome.storage.sync.set({"rateDialogDismiss": true});
+				chrome.storage.sync.set({"rateDialogDismiss": true, "rateResult": 0});
 			});
 		
 			container.append(title);
@@ -129,6 +140,84 @@ function addRateDialog() {
 		}
 	});
 }
+
+function addNotifyColorDialog() {
+	var isHomepage = $("ol.breadcrumb li").length <= 2;
+	if (!isHomepage) {
+		return;
+	}
+
+	chrome.storage.sync.get(['actionComplete', 'color', 'colorDismiss', 'colorResult'], function(result) {
+		if (result["colorDismiss"] == true) {
+			return;
+		}
+		if (result["actionComplete"] == true || result["filter"]) {
+			var container = $("<div></div>");
+			container.css("background-color", "#F0FAFF")
+					.css("margin-left", "13px")
+					.css("margin-right", "13px")
+					.css("border-style", "solid")
+					.css("border-width", "1px");
+		
+			var title = $("<p>Noticed the green color is gone?</p>")
+			title.css("text-align", "center");
+			title.css("font-size", "large");
+			title.css("font-weight", "bold");
+			title.css("padding-top", "15px");
+		
+			var info = $("<p>Hi, it's Trimoodle again, we thought you will like to revert the moodle color back to it's original color, is it ok? :)</p>")
+			info.css("padding", "10px");
+		
+			var actions = $("<div></div>");
+			actions.attr("align", "center");
+			actions.css("padding-bottom", "15px");
+			var ok = $("<button>Save setting and dismiss</button>");
+			ok.css("margin-right", "10px");
+			var dismiss = $("<button>Toggle green color</button>");
+			var isOn = result["colorResult"] != 0;
+
+			if (result["colorResult"] != 0 && result["colorResult"] != 1) {
+				chrome.storage.sync.set({"colorResult": 1});
+				$(".card-body").css("background-color", "#eaf8fc");
+			}
+
+			ok.click(function() {
+				container.remove();
+				chrome.storage.sync.set({"colorDismiss": true});
+				$(".card-body").css("background-color", "#eaf8fc");
+
+			});
+			dismiss.click(function() {
+				if (isOn) {
+					$(".card-body").css("background-color", "#EBFAEB");
+					chrome.storage.sync.set({"colorResult": 0});
+				}
+				else {
+					$(".card-body").css("background-color", "#eaf8fc");
+					chrome.storage.sync.set({"colorResult": 1});
+				}
+				isOn = !isOn;
+			});
+		
+			container.append(title);
+			container.append(info);
+			actions.append(ok);
+			actions.append(dismiss);
+			container.append(actions);
+		
+			$("#region-main").prepend(container);
+		}
+	});
+}
+
+function setMoodleColor() {
+	chrome.storage.sync.get(['colorResult'], function(result) {
+		if (result["colorResult"] == 1) {
+			$(".card-body").css("background-color", "#eaf8fc");
+		}
+	});
+}
+
 
 var isRtl = $("html").attr("dir") == "rtl";
 
@@ -155,3 +244,5 @@ root.append(button);
 updateUnhideButtonStatus();
 updateCoursesSidebar();
 addRateDialog();
+addNotifyColorDialog();
+setMoodleColor();
