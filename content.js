@@ -1,5 +1,6 @@
 var unhideButtonId = "unhide-button"
 var unhideButtonColor = "#D98901";
+const RATE_DIALOG_THRESHOLD = 10
 
 function updateUnhideButtonStatus() {
 	var button = $("#" + unhideButtonId);
@@ -31,7 +32,7 @@ function updateCoursesSidebar() {
 		$("li.type_course > p").each(function(i) {
 			var parent = $(this).parent();
 
-			var key = $(this).attr("data-node-key");
+			var key = parent.attr("data-node-key");
 			if (key in map) {
 				parent.hide();
 			}
@@ -81,23 +82,25 @@ function addRateDialog() {
 		return;
 	}
 
-	chrome.storage.sync.get(['actionComplete', 'filter', 'rateDialogDismiss'], function(result) {
+	chrome.storage.sync.get(['actionComplete', 'filter', 'rateDialogDismiss', 'rateShownCount'], function(result) {
 		if (result["rateDialogDismiss"] == true) {
 			return;
 		}
-		if (result["actionComplete"] == true || result["filter"]) {
-			chrome.storage.sync.get(["rateShownCount"], function(result) {
-				var count = result["rateShownCount"]
-				if (Number.isInteger(count)) {
-					chrome.storage.sync.set({"rateShownCount": count+1});
-				}
-				else {
-					chrome.storage.sync.set({"rateShownCount": 1});
-				}
-			});
 
+		var count = result["rateShownCount"]
+		if (result["actionComplete"] == true || result["filter"]) {
+			if (Number.isInteger(count)) {
+				chrome.storage.sync.set({"rateShownCount": count+1});
+				count += 1
+			}
+			else {
+				chrome.storage.sync.set({"rateShownCount": 1});
+			}
+		}
+
+		if ((result["actionComplete"] == true || result["filter"]) && count > RATE_DIALOG_THRESHOLD) {
 			var container = $("<div></div>");
-			container.css("background-color", "#F0FAFF")
+			container.css("background-color", "#ECF9EC")
 					.css("margin-left", "13px")
 					.css("margin-right", "13px")
 					.css("border-style", "solid")
@@ -173,7 +176,7 @@ function addNotifyColorDialog() {
 			actions.css("padding-bottom", "15px");
 			var ok = $("<button>Save setting and dismiss</button>");
 			ok.css("margin-right", "10px");
-			var dismiss = $("<button>Toggle green color</button>");
+			var dismiss = $("<button>On/Off green color</button>");
 			var isOn = result["colorResult"] != 0;
 
 			if (result["colorResult"] != 0 && result["colorResult"] != 1) {
@@ -244,5 +247,4 @@ root.append(button);
 updateUnhideButtonStatus();
 updateCoursesSidebar();
 addRateDialog();
-addNotifyColorDialog();
 setMoodleColor();
